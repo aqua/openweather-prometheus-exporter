@@ -132,7 +132,7 @@ func export(tc *ttlCollector, location string) error {
 			prometheus.GaugeOpts{
 				Namespace:   "weather",
 				Name:        "pressure_hpa",
-				Help:        "Current local atmosphereic pressure (hectopascals)",
+				Help:        "Current local atmospheric pressure (hectopascals)",
 				ConstLabels: prometheus.Labels{"location": location},
 			}, func() float64 {
 				conditionMutex.Lock()
