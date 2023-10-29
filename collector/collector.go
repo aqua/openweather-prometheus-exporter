@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -169,10 +170,17 @@ func NewCollector(key string, dailyLimit int, lat, lng float64) *Collector {
 	}
 }
 
+func openWeatherEndpoint() string {
+	if e := os.Getenv("OPEN_WEATHER_ENDPOINT"); e != "" {
+		return e
+	}
+	return "https://api.openweathermap.org"
+}
+
 func (c *Collector) get25Conditions() (*Conditions, error) {
 	u := fmt.Sprintf(
-		"https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&APPID=%s&units=metric",
-		c.lat, c.lng, url.QueryEscape(c.apiKey))
+		"%s/data/2.5/weather?lat=%f&lon=%f&APPID=%s&units=metric",
+		openWeatherEndpoint(), c.lat, c.lng, url.QueryEscape(c.apiKey))
 	log.Printf("calling 2.5 API at %s", u)
 	resp, err := http.Get(u)
 	if err != nil {
@@ -191,8 +199,8 @@ func (c *Collector) get25Conditions() (*Conditions, error) {
 
 func (c *Collector) get30Conditions() (*Conditions, error) {
 	u := fmt.Sprintf(
-		"https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&appid=%s&exclude=minutely,daily,hourly,alerts&units=metric",
-		c.lat, c.lng, url.QueryEscape(c.apiKey))
+		"%s/data/3.0/onecall?lat=%f&lon=%f&appid=%s&exclude=minutely,daily,hourly,alerts&units=metric",
+		openWeatherEndpoint(), c.lat, c.lng, url.QueryEscape(c.apiKey))
 	log.Printf("Calling 3.0 API at %s", u)
 	resp, err := http.Get(u)
 	if err != nil {
