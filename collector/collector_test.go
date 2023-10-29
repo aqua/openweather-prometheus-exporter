@@ -62,6 +62,9 @@ func TestCollect25Once(t *testing.T) {
 	if cond.Temperature != 20.24 {
 		t.Errorf("got temperature %f, want %f", cond.Temperature, 20.24)
 	}
+	if cond.Pressure != 1019 {
+		t.Errorf("got pressure %f, want %f", cond.Pressure, 1019.)
+	}
 	if cond.Humidity != 59 {
 		t.Errorf("got humidity %f, want %f", cond.Humidity, 59.)
 	}

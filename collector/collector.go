@@ -68,6 +68,7 @@ type Openweathermap25ConditionsResponse struct {
 func (c *Openweathermap25ConditionsResponse) toConditions() *Conditions {
 	return &Conditions{
 		Temperature:       c.Main.Temperature,
+		Pressure:          c.Main.Pressure,
 		Humidity:          float64(c.Main.HumidityPercent),
 		WindSpeed:         c.Wind.Speed,
 		WindDirection:     c.Wind.Direction,
@@ -83,7 +84,7 @@ type Openweathermap30Conditions struct {
 	MoonPhase     float64 `json:"moon_phase"`
 	Temperature   float64 `json:"temp"`
 	FeelsLike     float64 `json:"feels_like"`
-	Pressure      int     `json:"pressure"`
+	Pressure      float64 `json:"pressure"`
 	Humidity      float64 `json:"humidity"`
 	DewPoint      float64 `json:"dew_point"`
 	UVI           float64 `json:"uvi"`
@@ -97,6 +98,7 @@ type Openweathermap30Conditions struct {
 func (c *Openweathermap30Conditions) toConditions() *Conditions {
 	return &Conditions{
 		Temperature:       c.Temperature,
+		Pressure:          c.Pressure,
 		Humidity:          c.Humidity,
 		WindSpeed:         c.WindSpeed,
 		WindDirection:     c.WindDirection,
@@ -229,10 +231,11 @@ func (c *Collector) Conditions() (*Conditions, error) {
 }
 
 type Conditions struct {
-	Temperature       float64
-	Humidity          float64
-	WindSpeed         float64
-	WindDirection     float64
+	Temperature       float64 // celsius
+	Pressure          float64 // hPa (millibars)
+	Humidity          float64 // percent
+	WindSpeed         float64 // meters/sec
+	WindDirection     float64 // degrees
 	CloudCoverPercent float64
 }
 

@@ -131,6 +131,21 @@ func export(tc *ttlCollector, location string) error {
 		prometheus.NewGaugeFunc(
 			prometheus.GaugeOpts{
 				Namespace:   "weather",
+				Name:        "pressure_hpa",
+				Help:        "Current local atmosphereic pressure (hectopascals)",
+				ConstLabels: prometheus.Labels{"location": location},
+			}, func() float64 {
+				conditionMutex.Lock()
+				defer conditionMutex.Unlock()
+				if cond, err := tc.reCollect(); err != nil {
+					return math.NaN()
+				} else {
+					return cond.Pressure
+				}
+			}),
+		prometheus.NewGaugeFunc(
+			prometheus.GaugeOpts{
+				Namespace:   "weather",
 				Name:        "humidity",
 				Help:        "Current local humidity",
 				ConstLabels: prometheus.Labels{"location": location},
@@ -146,8 +161,8 @@ func export(tc *ttlCollector, location string) error {
 		prometheus.NewGaugeFunc(
 			prometheus.GaugeOpts{
 				Namespace:   "weather",
-				Name:        "wind_speed_kph",
-				Help:        "Current local wind speed, in kph",
+				Name:        "wind_speed_meters_per_sec",
+				Help:        "Current local wind speed, in meters/sec",
 				ConstLabels: prometheus.Labels{"location": location},
 			}, func() float64 {
 				conditionMutex.Lock()
