@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenWeather API prometheus exporter
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/openweather-prometheus-exporter --listen=localhost:9654 --openweather-api-key-file=${CREDENTIALS_DIRECTORY}/apikey --location=40.8099129,-73.9505193
+Restart=on-failure
+Type=simple
+DynamicUser=true
+# put your OpenWeather API key in this file
+LoadCredential=apikey:/etc/openweather-prometheus-exporter/apikey
+
+[Install]
+WantedBy=multi-user.target
+Alias=openweather-prometheus-exporter
